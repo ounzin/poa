@@ -1,0 +1,22 @@
+# Compilation Maven
+target/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# VS Code
+.vscode/
+bin/
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# Fichiers système
+.DS_Store
+Thumbs.db
+
+# Archives de rendu de TP
+*.zip

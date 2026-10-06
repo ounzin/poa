@@ -1,0 +1,10 @@
+# Fins de ligne : LF partout, y compris sous Windows (mvnw est un script shell)
+* text=auto eol=lf
+
+# Les scripts Windows exigent CRLF
+*.cmd text eol=crlf
+
+# Fichiers binaires : aucune conversion
+*.pdf binary
+*.png binary
+*.jpg binary
