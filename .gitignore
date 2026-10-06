@@ -1,11 +1,11 @@
 # Compilation Maven
 target/
+prive/
 
 # IntelliJ IDEA
 .idea/
 *.iml
 
-# VS Code
 .vscode/
 bin/
 
