@@ -21,7 +21,7 @@ classDiagram
 
 Les garanties possibles : responsabilité civile (RC), vol, bris de glace, tous risques.
 
-Ce diagramme montre les concepts, pas les classes. Votre modèle de classes est à concevoir ; il est validé en séance 3.
+Ce diagramme montre les concepts. Les classes communes et les méthodes de chaque partie sont données dans le cahier des charges, et c'est à vous de concevoir l'intérieur de chaque partie.
 
 ### Le bonus-malus (règles simplifiées)
 
@@ -45,14 +45,14 @@ Comme pour les prix, pas de `double`. Le cahier des charges fixe la représentat
 
 ## Les quatre parties
 
-Le **socle commun** (Assuré, Véhicule, Contrat, Garantie) est conçu ensemble. Chaque membre prend ensuite une partie :
+Le **socle commun** (Assuré, Véhicule, Contrat, Garantie), décrit dans le cahier des charges, est codé ensemble. Chaque membre prend ensuite une partie :
 
-| Partie                       | Responsabilités                                                                           |
-| ---------------------------- | ----------------------------------------------------------------------------------------- |
-| 1. Tarification              | Calculer la prime annuelle d'un contrat                                                   |
-| 2. Sinistres                 | Déclarer un sinistre, établir la responsabilité, calculer l'indemnisation avec franchises |
-| 3. Bonus-malus et échéance   | Faire évoluer le coefficient, renouveler ou résilier un contrat                           |
-| 4. Portefeuille et reporting | Importer des contrats depuis un CSV, produire des statistiques et les avis d'échéance     |
+| Partie                       | Responsabilités                                                                                    |
+| ---------------------------- | -------------------------------------------------------------------------------------------------- |
+| 1. Tarification              | Calculer la prime annuelle d'un contrat                                                            |
+| 2. Sinistres                 | Déclarer un sinistre, calculer l'indemnisation avec franchises, compter les sinistres responsables |
+| 3. Bonus-malus et échéance   | Faire évoluer le coefficient, renouveler un contrat, calculer le remboursement d'une résiliation   |
+| 4. Portefeuille et reporting | Importer des contrats depuis un CSV, produire des statistiques et les avis d'échéance              |
 
 Les parties dépendent les unes des autres :
 
@@ -63,7 +63,7 @@ flowchart LR
     B[3. Bonus-malus et échéance]
     P[4. Portefeuille et reporting]
     B -- sinistres responsables --> S
-    B -- nouvelle prime --> T
+    B -- prime --> T
     P -- primes --> T
     P -- échéances --> B
 ```
