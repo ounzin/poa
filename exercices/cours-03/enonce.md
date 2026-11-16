@@ -64,6 +64,8 @@ Windows (PowerShell) :
 
 Lisez toujours le test, il montre précisément ce qui est attendu.
 
+En séance, faites au moins les questions 1 à 5. Les questions 6 à 8 sont la suite, à faire ensuite, en séance ou chez vous.
+
 À la fin de la séance, sauvegardez votre travail :
 
 ```bash
@@ -87,6 +89,13 @@ Les types paramètres se déclarent entre chevrons, juste après le nom du recor
 
 </details>
 
+<details>
+<summary>Si un test échoue</summary>
+
+- *paire est un record avec deux types parametres* ⇒ `Paire` se déclare avec `record`, et ses deux types paramètres s'écrivent entre chevrons, juste après son nom.
+- *inverser echange les deux valeurs* ⇒ la nouvelle paire commence par `second`, puis `premier`.
+
+</details>
 ### Question 2 — Le plus grand élément d'une liste
 
 Le test à copier est `OutilsTest.java`.
@@ -101,6 +110,16 @@ public static <T extends Comparable<T>> T plusGrand(List<T> elements)
 <summary>Indice</summary>
 
 `<T extends Comparable<T>>` annonce une méthode générique, dont le type `T` sait se comparer à un autre `T`. On compare deux éléments avec `a.compareTo(b)`, qui renvoie un nombre positif quand `a` est le plus grand. Partez du premier élément, puis parcourez la liste en gardant le plus grand rencontré.
+
+</details>
+
+<details>
+<summary>Si un test échoue</summary>
+
+- *une liste vide est refusee*, avec une `ArrayIndexOutOfBoundsException` ⇒ la liste vide n'est pas contrôlée avant la lecture de son premier élément.
+- *une liste vide est refusee*, avec une autre exception ⇒ c'est une `IllegalArgumentException` qui est attendue.
+- Les tests obtiennent le plus petit élément, 3 au lieu de 17 ⇒ la comparaison est dans le mauvais sens. `a.compareTo(b) > 0` signifie que `a` est plus grand que `b`.
+- *le plus grand peut etre en premier ou en dernier* ⇒ la boucle oublie le premier ou le dernier élément de la liste.
 
 </details>
 
@@ -121,6 +140,16 @@ Une place doit pouvoir se comparer à une autre. `Place` implémente donc `Compa
 
 </details>
 
+<details>
+<summary>Si un test échoue</summary>
+
+- *rang et numero invalides* ⇒ les contrôles se placent dans le constructeur compact du record, `public Place { ... }`. Le rang va de `'A'` à `'Z'`, et le numéro vaut au moins 1.
+- *to string colle le rang et le numero* obtient `78` ⇒ `rang + numero` additionne le code du caractère et le numéro. Relisez l'indice.
+- *to string colle le rang et le numero* obtient `Place[rang=B, numero=12]` ⇒ `toString` n'est pas redéfinie, et c'est celle du record qui s'affiche.
+- *les places se trient par rang puis par numero* obtient A10 avant A2 ⇒ les numéros sont comparés comme des textes, ou dans le mauvais sens. `Integer.compare` compare deux entiers.
+- *la plus grande place* obtient B20 ⇒ `compareTo` ne regarde que les numéros. Le rang se compare d'abord.
+
+</details>
 ### Question 4 — Réserver une place
 
 Le test à copier est `SalleReservationTest.java`.
@@ -145,6 +174,20 @@ Rangez les réservations dans une `Map<Place, String>`, qui associe chaque place
 
 </details>
 
+<details>
+<summary>Si un test échoue</summary>
+
+- *dimensions invalides* ⇒ le constructeur refuse un dernier rang qui n'est pas une majuscule, et un nombre de places inférieur à 1.
+- *les places qui existent* ⇒ les deux bornes sont comprises. Dans `new Salle('C', 10)`, la place C10 existe.
+- *une salle neuve est libre* annonce 20 places au lieu de 30 ⇒ de A à C, il y a trois rangs, alors que `'C' - 'A'` ne vaut que 2.
+- *une place ne se reserve qu une fois* ⇒ `put` remplace l'ancienne valeur sans rien dire. Vérifiez que la place est libre avant de la réserver.
+- *une place libre n a pas d occupant* ⇒ `get` renvoie `null` pour une place libre, et c'est à votre méthode de lever l'exception.
+- *une place qui n existe pas est refusee* ⇒ chaque méthode qui reçoit une place commence par vérifier qu'elle existe. Une méthode privée évite de recopier ce contrôle.
+- *les places reservees sont triees* ⇒ une `HashMap` ne trie pas ses clés, contrairement à une `TreeMap`.
+- *la liste des places reservees n est pas modifiable* ⇒ une `new ArrayList<>(...)` se modifie. `List.copyOf` renvoie une copie qu'on ne peut pas modifier.
+- Une `IllegalStateException` « Place déjà réservée » sur une place libre ⇒ le `compareTo` de `Place` renvoie 0 pour deux places différentes. Revenez à la question 3.
+
+</details>
 ### Question 5 — La liste d'attente
 
 Le test à copier est `SalleAttenteTest.java`.
@@ -164,11 +207,32 @@ Une file (`Queue`) sert ses éléments dans leur ordre d'arrivée, comme la file
 
 </details>
 
+<details>
+<summary>Si un test échoue</summary>
+
+- *la place annulee va au premier de la liste* obtient Farid au lieu d'Emma ⇒ la liste sert le dernier inscrit, comme une pile. Une file ajoute avec `add` et retire avec `poll`.
+- *la place annulee va au premier de la liste* obtient `[Emma, Farid]` ⇒ `peek` regarde le premier de la file sans le retirer, contrairement à `poll`.
+- *la place annulee va au premier de la liste* lève une `IllegalStateException` ⇒ après l'annulation, la place n'est donnée à personne.
+- *annuler sans liste d attente libere la place* ⇒ quand la file est vide, `poll` renvoie `null`. Il ne faut pas réserver la place au nom de `null`.
+- *annuler une place libre est refuse* ⇒ vérifiez que la place existe, puis qu'elle est réservée. `remove` sur une `Map` renvoie `null` quand la clé était absente.
+- *la liste d attente renvoyee n est pas modifiable* ⇒ renvoyez une copie faite avec `List.copyOf`.
+
+</details>
 ### Question 6 — Compter par rang
 
 Le test à copier est `SalleStatistiquesTest.java`.
 
 Ajoutez à `Salle` la méthode `Map<Character, Integer> reservationsParRang()`, qui compte les places réservées dans chaque rang. Seuls les rangs qui ont au moins une réservation apparaissent, dans l'ordre alphabétique.
+
+<details>
+<summary>Si un test échoue</summary>
+
+- Une `NullPointerException` ⇒ `get` renvoie `null` pour un rang pas encore compté, et `null` ne se convertit pas en `int`. `getOrDefault` donne une valeur de départ.
+- *les reservations sont comptees par rang* obtient `Q=1` au lieu de `Q=3` ⇒ le compteur est remis à 1 au lieu d'être augmenté.
+- *les rangs sont dans l ordre alphabetique* obtient `[Q, B]` ⇒ une `HashMap` ne trie pas ses clés.
+- *une salle vide n a aucun rang* ⇒ ne créez une entrée que pour les rangs qui ont au moins une réservation.
+
+</details>
 
 ## Exercice 3 — Deux pièges des collections
 
@@ -188,3 +252,13 @@ Le test à copier est `SalleLiberationTest.java`.
 Un spectateur qui ne se présente pas perd toutes ses réservations. Ajoutez à `Salle` la méthode `int libererPlacesDe(String nom)`, qui supprime toutes les réservations faites à ce nom et renvoie leur nombre. Les places libérées restent libres, sans passer à la liste d'attente.
 
 Écrivez d'abord cette méthode avec une boucle `for` sur `reservations.keySet()`, qui appelle `reservations.remove(place)` pour chaque place du spectateur. Lancez le test et notez l'exception obtenue. Corrigez ensuite la méthode en parcourant les réservations avec un `Iterator`, et en supprimant avec sa méthode `remove`.
+
+<details>
+<summary>Si un test échoue</summary>
+
+- *liberer toutes les places d une personne* lève une `ConcurrentModificationException` ⇒ c'est l'expérience demandée. Passez maintenant par un `Iterator`, et supprimez avec sa méthode `remove`.
+- *liberer toutes les places d une personne* est trop long ⇒ la boucle n'appelle jamais `next()`, et l'itérateur n'avance pas.
+- *liberer toutes les places d une personne* obtient 1 au lieu de 2 ⇒ la boucle s'arrête après la première place libérée.
+- *les places liberees restent libres* ⇒ libérer n'est pas annuler. Les places libérées ne passent pas à la liste d'attente.
+
+</details>
